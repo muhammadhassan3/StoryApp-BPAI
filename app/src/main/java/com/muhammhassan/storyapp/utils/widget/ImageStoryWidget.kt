@@ -32,9 +32,12 @@ class ImageStoryWidget : AppWidgetProvider() {
         }
     }
 
+
+
     companion object {
         private const val TOAST_ACTION = "com.muhammhassan.storyapp.TOAST_ACTION"
         const val EXTRA_ITEM = "com.muhammhassan.storyapp.EXTRA_ITEM"
+
 
         private fun updateAppWidget(
             context: Context,
@@ -57,7 +60,7 @@ class ImageStoryWidget : AppWidgetProvider() {
                 context,
                 0,
                 toastIntent,
-                if (Build.VERSION.SDK_INT > +Build.VERSION_CODES.S)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
                 else 0
             )

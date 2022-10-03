@@ -1,4 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.StoryApp.AppWidget.Container"
@@ -6,40 +6,42 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.StoryApp.AppWidgetContainer">
 
-    <StackView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:loopViews="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/stackView"
-        app:layout_constraintVertical_bias="0"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvTextTitle"
-        app:layout_constraintTop_toBottomOf="@id/stackView"
-        android:background="@color/violet_color_wheel"
-        tools:text="Testing"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
+        <StackView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:loopViews="true"
+            android:id="@+id/stackView"
+            android:layout_weight="9"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTextTitle"
+                android:background="@color/violet_color_wheel"
+                android:text="@string/app_widget_text"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+        </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/noData"
-        android:text="@string/no_data"
-        android:visibility="gone"/>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="center"
+        android:id="@+id/noData"/>
+</FrameLayout>

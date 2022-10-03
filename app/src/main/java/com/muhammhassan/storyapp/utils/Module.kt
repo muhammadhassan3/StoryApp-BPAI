@@ -33,7 +33,7 @@ object Module {
         val httpInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         fun getClient(context: Context) = OkHttpClient.Builder()
             .addInterceptor(AuthorizationInterceptor(context))
-            .addInterceptor(httpInterceptor)
+//            .addInterceptor(httpInterceptor)
             .build()
 
         single {

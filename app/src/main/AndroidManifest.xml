@@ -22,7 +22,7 @@
         tools:targetApi="31">
         <receiver
             android:name=".utils.widget.ImageStoryWidget"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -61,8 +61,8 @@
                 android:resource="@xml/file_path" />
         </provider>
 
-        <service android:name=".utils.widget.StackWidgetService"
-            android:permission="android.permissions.BIND_REMOTEVIEWS"/>
+        <service android:name="com.muhammhassan.storyapp.utils.widget.StackWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

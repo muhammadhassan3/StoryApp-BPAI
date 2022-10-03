@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.muhammhassan.storyapp.R
 import com.muhammhassan.storyapp.data.model.response.StoriesResponseModel
 import com.muhammhassan.storyapp.data.usecase.StoryListUseCase
+import com.muhammhassan.storyapp.utils.Extension.showToast
 import com.muhammhassan.storyapp.utils.api.Status
 import com.muhammhassan.storyapp.utils.widget.ImageStoryWidget.Companion.EXTRA_ITEM
 
@@ -21,20 +22,26 @@ class StackRemoteViewsFactory(private val context: Context, private val useCase:
 
     override fun onCreate() {
         useCase.getData().asLiveData().observeForever {
-            Log.e("Stack Widget", "onCreate: Retrieving data", )
+            Log.e("Stack Widget", "onCreate: Retrieving data:${it.status}/${it.data?.size}" )
             when(it.status){
                 Status.LOADING -> list.clear()
                 Status.SUCCESS -> {
                     it.data?.map { data -> list.add(data) }
+
+
                 }
                 Status.NO_DATA -> list.clear()
-                Status.ERROR -> list.clear()
+                Status.ERROR -> {
+                    list.clear()
+                    it.message?.let { message -> context.showToast(message) }
+                }
             }
         }
     }
 
     override fun onDataSetChanged() {
         list.map {
+            Log.e("StackView", "onDataSetChanged: Parsing Image for data ${it.name}", )
             val future = Glide.with(context)
                 .asBitmap()
                 .load(it.photoUrl)
@@ -54,7 +61,7 @@ class StackRemoteViewsFactory(private val context: Context, private val useCase:
     override fun getCount(): Int = list.size
 
     override fun getViewAt(position: Int): RemoteViews {
-        val rv = RemoteViews(context.packageName, R.layout.image_story_widget)
+        val rv = RemoteViews(context.packageName, R.layout.widget_item)
         rv.setImageViewBitmap(R.id.imgWidget, listBitmap[position])
 
         val extras = bundleOf(
