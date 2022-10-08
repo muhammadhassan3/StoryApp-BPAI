@@ -28,4 +28,7 @@ interface ApiInterface {
         @Query("page") page: Int,
         @Query("size") size: Int
     ): Response<StatusResponse>
+
+    @GET("stories?location=1")
+    suspend fun getStoryWithLocation(): Response<StatusResponse>
 }

@@ -5,7 +5,7 @@
     <string name="welcome">Welcome</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
-    <string name="password_less_than_six">Pasword length less than siz</string>
+    <string name="password_less_than_six">Pasword length less than six</string>
     <string name="email">Email</string>
     <string name="invalid_email">Your email is invalid</string>
     <string name="signup_message">Don\'t have account? Sign up here</string>
@@ -36,4 +36,10 @@
     <string name="change_language">Change Language</string>
     <string name="logout">Logout</string>
     <string name="story_by">Story by %s</string>
+    <string name="show_map">Show Map</string>
+    <string name="story_spread">Stories Map</string>
+    <string name="getting_data">Parsing Data…</string>
+    <string name="showing_marker">Showing Markers</string>
+    <string name="error">Failed showing data, %s</string>
+    <string name="all_markers_added">All markers showed</string>
 </resources>

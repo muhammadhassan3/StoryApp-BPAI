@@ -85,6 +85,24 @@ class RemoteDataSource(private val api: ApiInterface) {
         }
     }
 
+    suspend fun getStoriesWithLocation(): ApiResponse<List<StoriesResponseModel>>{
+        return try{
+            val response = api.getStoryWithLocation()
+            if (response.isSuccessful && response.body() != null) {
+                val data = response.body()!!
+                if (data.error) {
+                    ApiResponse.error(data.message)
+                } else {
+                    if (data.listStory.isNotEmpty()) {
+                        ApiResponse.success(data.listStory)
+                    } else ApiResponse.noData()
+                }
+            } else ApiResponse.error(parsingError(response))
+        }catch (e: Exception){
+            ApiResponse.error(e.message.toString())
+        }
+    }
+
     companion object {
         private var INSTANCE: RemoteDataSource? = null
 

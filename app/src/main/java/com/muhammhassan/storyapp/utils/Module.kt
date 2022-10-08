@@ -2,22 +2,16 @@ package com.muhammhassan.storyapp.utils
 
 import android.content.Context
 import com.muhammhassan.storyapp.data.datasource.RemoteDataSource
-import com.muhammhassan.storyapp.data.interactor.DetailStoryInteractor
-import com.muhammhassan.storyapp.data.interactor.LoginInteractor
-import com.muhammhassan.storyapp.data.interactor.RegisterInteractor
-import com.muhammhassan.storyapp.data.interactor.StoryListInteractor
+import com.muhammhassan.storyapp.data.interactor.*
 import com.muhammhassan.storyapp.data.repository.StoryRepository
 import com.muhammhassan.storyapp.data.repository.StoryRepositoryImpl
 import com.muhammhassan.storyapp.data.repository.UserRepository
 import com.muhammhassan.storyapp.data.repository.UserRepositoryImpl
-import com.muhammhassan.storyapp.data.usecase.DetailStoryUseCase
-import com.muhammhassan.storyapp.data.usecase.LoginUseCase
-import com.muhammhassan.storyapp.data.usecase.RegisterUseCase
-import com.muhammhassan.storyapp.data.usecase.StoryListUseCase
+import com.muhammhassan.storyapp.data.usecase.*
 import com.muhammhassan.storyapp.utils.api.ApiInterface
-import com.muhammhassan.storyapp.utils.widget.StackRemoteViewsFactory
 import com.muhammhassan.storyapp.view.list.ListStoryViewModel
 import com.muhammhassan.storyapp.view.login.LoginViewModel
+import com.muhammhassan.storyapp.view.map.MapViewModel
 import com.muhammhassan.storyapp.view.register.RegisterViewModel
 import com.muhammhassan.storyapp.view.story.DetailStoryViewModel
 import okhttp3.OkHttpClient
@@ -33,7 +27,7 @@ object Module {
         val httpInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         fun getClient(context: Context) = OkHttpClient.Builder()
             .addInterceptor(AuthorizationInterceptor(context))
-//            .addInterceptor(httpInterceptor)
+            .addInterceptor(httpInterceptor)
             .build()
 
         single {
@@ -61,6 +55,7 @@ object Module {
         viewModel { RegisterViewModel(get(), get()) }
         viewModel { ListStoryViewModel(get(), get()) }
         viewModel { DetailStoryViewModel(get(), get()) }
+        viewModel { MapViewModel(get()) }
     }
 
     val useCaseModule = module {
@@ -68,5 +63,6 @@ object Module {
         factory<RegisterUseCase> { RegisterInteractor.getInstance(get()) }
         factory<StoryListUseCase> { StoryListInteractor.getInstance(get()) }
         factory<DetailStoryUseCase> { DetailStoryInteractor.getInstance(get()) }
+        factory<MapUseCase> { MapInteractor.getInstance(get()) }
     }
 }

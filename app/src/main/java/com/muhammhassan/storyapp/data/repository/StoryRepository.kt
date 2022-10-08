@@ -10,4 +10,5 @@ interface StoryRepository {
     fun saveStory(image: File, desc: String): Flow<ApiResponse<Any>>
     fun getPagingStories(): Flow<PagingData<StoriesResponseModel>>
     fun getStories(): Flow<ApiResponse<List<StoriesResponseModel>>>
+    fun getStoriesWithLocation(): Flow<ApiResponse<List<StoriesResponseModel>>>
 }

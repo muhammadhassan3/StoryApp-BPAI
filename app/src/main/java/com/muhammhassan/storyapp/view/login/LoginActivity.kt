@@ -3,8 +3,6 @@ package com.muhammhassan.storyapp.view.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import com.muhammhassan.storyapp.R
 import com.muhammhassan.storyapp.databinding.ActivityLoginBinding
@@ -13,8 +11,6 @@ import com.muhammhassan.storyapp.utils.Extension.gone
 import com.muhammhassan.storyapp.utils.Extension.show
 import com.muhammhassan.storyapp.utils.Extension.showToast
 import com.muhammhassan.storyapp.utils.Extension.startActivityWithAnimation
-import com.muhammhassan.storyapp.utils.Utils.isEmailValid
-import com.muhammhassan.storyapp.utils.Utils.isPasswordValid
 import com.muhammhassan.storyapp.utils.api.Status
 import com.muhammhassan.storyapp.view.list.ListStoryActivity
 import com.muhammhassan.storyapp.view.register.RegisterActivity
@@ -32,57 +28,6 @@ class LoginActivity : AppCompatActivity() {
         binding.apply {
             edtEmail.getEditText().setText("muhammhassan@gmail.com")
             edtPassword.getEditText().setText("1234567")
-
-            edtEmail.getEditText().addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (isEmailValid(s.toString())) {
-                        binding.edtEmail.getInputLayout().apply {
-                            isHelperTextEnabled = false
-                        }
-                    } else binding.edtEmail.getInputLayout().apply {
-                        isHelperTextEnabled = true
-                        helperText = getString(R.string.invalid_email)
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-            })
-            edtPassword.getEditText().addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (isPasswordValid(s.toString())) {
-                        binding.edtPassword.getInputLayout().apply {
-                            isHelperTextEnabled = false
-                        }
-                    } else binding.edtPassword.getInputLayout().apply {
-                        isHelperTextEnabled = true
-                        helperText = getString(R.string.password_less_than_six)
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-
-            })
-
             btnRegister.setOnClickListener {
                 val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
                 startActivityWithAnimation(intent)
@@ -98,11 +43,11 @@ class LoginActivity : AppCompatActivity() {
         redirectToListActivity()
     }
 
-    private fun redirectToListActivity(){
+    private fun redirectToListActivity() {
         val sharedPref = getSharedPreferences(Constant.SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val token = sharedPref.getString(Constant.TOKEN_KEY, null)
 
-        if(token != null){
+        if (token != null) {
             val intent = Intent(this, ListStoryActivity::class.java)
             startActivity(intent)
             finish()

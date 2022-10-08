@@ -35,11 +35,6 @@ class RegisterActivity : AppCompatActivity() {
 
 
         binding.apply {
-
-            edtEmail.getEditText().setText("muhammhassan@gmail.com")
-            edtName.setText("Muhammad Hassan Thalib")
-            edtPassword.getEditText().setText("1234567")
-
             edtEmail.getEditText().addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,

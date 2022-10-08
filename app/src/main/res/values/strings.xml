@@ -35,8 +35,14 @@
     <string name="change_language">Ganti Bahasa</string>
     <string name="logout">Keluar</string>
     <string name="story_by">Cerita dari %s</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
-    <string name="app_widget_text">Story List</string>
+    <string name="appwidget_text" translatable="false">Story Widget</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="app_widget_description" translatable="false">This is an app widget description</string>
+    <string name="app_widget_text" translatable="false">Story List</string>
+    <string name="show_map">Lihat Peta</string>
+    <string name="story_spread">Sebaran Cerita</string>
+    <string name="getting_data">Memuat Data…</string>
+    <string name="showing_marker">Menampilkan Penanda....</string>
+    <string name="error">Gagal menampilkan data, %s</string>
+    <string name="all_markers_added">Seluruh penanda sudah ditampilkan</string>
 </resources>

@@ -34,6 +34,12 @@ class StoryRepositoryImpl(private val remoteDataSource: RemoteDataSource): Story
         emit(response)
     }
 
+    override fun getStoriesWithLocation(): Flow<ApiResponse<List<StoriesResponseModel>>> = flow{
+        emit(ApiResponse.loading())
+        val response = remoteDataSource.getStoriesWithLocation()
+        emit(response)
+    }
+
     companion object{
         private var INSTANCE: StoryRepositoryImpl? = null
 

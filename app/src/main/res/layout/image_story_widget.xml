@@ -1,6 +1,4 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.StoryApp.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,37 +9,34 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="10">
+
         <StackView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:loopViews="true"
             android:id="@+id/stackView"
-            android:layout_weight="9"/>
-        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvTextTitle"
-                android:background="@color/violet_color_wheel"
-                android:text="@string/app_widget_text"
-                android:textColor="@color/white"
-                android:textAlignment="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
-        </RelativeLayout>
+            android:layout_weight="9"
+            android:loopViews="true" />
+
+        <TextView
+            android:id="@+id/tvTextTitle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/violet_color_wheel"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:text="@string/app_widget_text"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/noData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/noData"/>
+        android:layout_gravity="center" />
 </FrameLayout>

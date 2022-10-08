@@ -24,6 +24,8 @@ import com.muhammhassan.storyapp.view.story.DetailStoryActivity
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.core.util.Pair
+import com.muhammhassan.storyapp.utils.Extension.startActivityWithAnimation
+import com.muhammhassan.storyapp.view.map.MapActivity
 
 class ListStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListStoryBinding
@@ -159,13 +161,17 @@ class ListStoryActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.localization -> {
                 val intent = Intent(Settings.ACTION_LOCALE_SETTINGS)
-                startActivity(intent)
+                startActivityWithAnimation(intent)
             }
             R.id.logout -> {
                 viewModel.logout()
                 val intent = Intent(this@ListStoryActivity, LoginActivity::class.java)
-                startActivity(intent)
+                startActivityWithAnimation(intent)
                 finish()
+            }
+            R.id.optMap -> {
+                val intent = Intent(this, MapActivity::class.java)
+                startActivityWithAnimation(intent)
             }
         }
         return super.onOptionsItemSelected(item)
