@@ -17,7 +17,4 @@
     <style name="Theme.StoryApp.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:padding">4dp</item>
     </style>
-    <style name="Theme.StoryApp.Button.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:padding">4dp</item>
-    </style>
 </resources>

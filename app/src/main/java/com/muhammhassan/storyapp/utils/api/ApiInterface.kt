@@ -20,7 +20,9 @@ interface ApiInterface {
     @POST("stories")
     suspend fun addStory(
         @Part image: MultipartBody.Part,
-        @Part("description") desc: RequestBody
+        @Part("description") desc: RequestBody,
+        @Part("lat") latitude: RequestBody?,
+        @Part("lon") longitude: RequestBody?
     ): Response<StatusResponse>
 
     @GET("stories")

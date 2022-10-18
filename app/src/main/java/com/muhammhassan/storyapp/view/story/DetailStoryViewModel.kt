@@ -2,6 +2,7 @@ package com.muhammhassan.storyapp.view.story
 
 import android.app.Application
 import android.content.Context
+import android.location.Location
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -22,6 +23,8 @@ class DetailStoryViewModel(private val useCase: DetailStoryUseCase, private val 
     var image: File? = null
     private var desc: String? = null
     var type: Int = 0 //0 = Add; 1 = Detail
+    private var longitude: Double? = null
+    private var latitude: Double? = null
 
     fun setData(data: StoriesResponseModel) {
         _data.value = ApiResponse.success(data)
@@ -42,12 +45,17 @@ class DetailStoryViewModel(private val useCase: DetailStoryUseCase, private val 
     fun save() {
         if (image != null && !desc.isNullOrEmpty()) {
             viewModelScope.launch {
-                useCase.save(image!!, desc!!).collect {
+                useCase.save(image!!, desc!!, latitude, longitude).collect {
                     _data.postValue(ApiResponse(it.status, null, it.message))
                 }
             }
         } else {
             _data.value = ApiResponse.error(mApp.applicationContext.getString(R.string.check_input))
         }
+    }
+
+    fun setLocation(location: Location) {
+        this.latitude = location.latitude
+        this.longitude = location.longitude
     }
 }

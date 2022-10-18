@@ -11,10 +11,6 @@
     <string name="signup_message">Don\'t have account? Sign up here</string>
     <string name="name">Name</string>
     <string name="register">Register</string>
-    <string name="login_message">Have an account? Sign in here</string>
-    <string name="warning">Warning</string>
-    <string name="data_is_filled">You have fill some data, still want to continue?</string>
-    <string name="yes">Yes</string>
     <string name="invalid_email_password">Emal and password combination not found</string>
     <string name="data_not_found">Data not found</string>
     <string name="invalid_name">Please input your name</string>

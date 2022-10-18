@@ -1,12 +1,10 @@
 package com.muhammhassan.storyapp.view.login
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.muhammhassan.storyapp.R
 import com.muhammhassan.storyapp.databinding.ActivityLoginBinding
-import com.muhammhassan.storyapp.utils.Constant
 import com.muhammhassan.storyapp.utils.Extension.gone
 import com.muhammhassan.storyapp.utils.Extension.show
 import com.muhammhassan.storyapp.utils.Extension.showToast
@@ -26,8 +24,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViewModel()
         binding.apply {
-            edtEmail.getEditText().setText("muhammhassan@gmail.com")
-            edtPassword.getEditText().setText("1234567")
             btnRegister.setOnClickListener {
                 val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
                 startActivityWithAnimation(intent)
@@ -44,9 +40,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun redirectToListActivity() {
-        val sharedPref = getSharedPreferences(Constant.SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        val token = sharedPref.getString(Constant.TOKEN_KEY, null)
-
+        val token = viewModel.getToken()
         if (token != null) {
             val intent = Intent(this, ListStoryActivity::class.java)
             startActivity(intent)
@@ -61,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
                 Status.SUCCESS -> {
                     showLoading(false)
                     it.data?.let { data ->
-                        viewModel.setToken(data.token, this@LoginActivity)
+                        viewModel.setToken(data.token)
                     }
                     val intent = Intent(this@LoginActivity, ListStoryActivity::class.java)
                     startActivity(intent)

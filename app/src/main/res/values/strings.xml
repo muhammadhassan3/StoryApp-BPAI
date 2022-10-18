@@ -10,10 +10,6 @@
     <string name="signup_message">Belum punya akun? Daftar disini</string>
     <string name="name">Nama</string>
     <string name="register">Daftar</string>
-    <string name="login_message">Sudah punya akun? Login disini</string>
-    <string name="warning">Peringatan</string>
-    <string name="data_is_filled">Kamu sudah mengisi beberapa form di atas, apakah kamu ingin menghapusnya dan melanjutkan?</string>
-    <string name="yes">Ya</string>
     <string name="invalid_email_password">Kombinasi email dan password yang kamu masukkan tidak ditemukan, silahkan periksa kembali data yang anda masukan.</string>
     <string name="data_not_found">Data tidak ditemukan</string>
     <string name="invalid_name">Harap masukkan nama dengan benar</string>
@@ -35,9 +31,6 @@
     <string name="change_language">Ganti Bahasa</string>
     <string name="logout">Keluar</string>
     <string name="story_by">Cerita dari %s</string>
-    <string name="appwidget_text" translatable="false">Story Widget</string>
-    <string name="add_widget" translatable="false">Add widget</string>
-    <string name="app_widget_description" translatable="false">This is an app widget description</string>
     <string name="app_widget_text" translatable="false">Story List</string>
     <string name="show_map">Lihat Peta</string>
     <string name="story_spread">Sebaran Cerita</string>

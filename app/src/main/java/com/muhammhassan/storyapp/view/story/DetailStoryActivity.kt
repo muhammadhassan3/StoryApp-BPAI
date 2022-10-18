@@ -2,17 +2,24 @@ package com.muhammhassan.storyapp.view.story
 
 import android.Manifest
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.muhammhassan.storyapp.R
 import com.muhammhassan.storyapp.data.model.response.StoriesResponseModel
 import com.muhammhassan.storyapp.databinding.ActivityDetailStoryBinding
@@ -23,12 +30,17 @@ import com.muhammhassan.storyapp.utils.Extension.showToast
 import com.muhammhassan.storyapp.utils.Utils.createCustomTempFile
 import com.muhammhassan.storyapp.utils.api.Status
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 class DetailStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailStoryBinding
     private val viewModel by viewModel<DetailStoryViewModel>()
+    private lateinit var fusedLocation: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private var isTracking = false
 
-    private val cameraCallback =
+    private val cameraIntentCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 viewModel.image?.let { file ->
@@ -38,7 +50,7 @@ class DetailStoryActivity : AppCompatActivity() {
             }
         }
 
-    private val galleryCallback = registerForActivityResult(
+    private val galleryIntentCallback = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -51,15 +63,38 @@ class DetailStoryActivity : AppCompatActivity() {
         }
     }
 
+    private val locationIntentCallback =
+        registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            when (result.resultCode) {
+                RESULT_OK -> {
+                    Log.e("DetailStoryActivity", "LocationIntentCallback: Location activated")
+                }
+                RESULT_CANCELED -> {
+                    Log.e(
+                        "DetailStoryActivity",
+                        "LocationIntentCallback : Location request canceled"
+                    )
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val data = intent.getParcelableExtra<StoriesResponseModel>(DATA)
+        val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) intent.getParcelableExtra(
+            DATA,
+            StoriesResponseModel::class.java
+        ) else intent.getParcelableExtra(DATA)
         binding.apply {
             setSupportActionBar(toolbar)
             supportActionBar?.apply {
-                title = if(data == null) getString(R.string.add_story) else getString(R.string.story_by, data.name)
+                title = if (data == null) getString(R.string.add_story) else getString(
+                    R.string.story_by,
+                    data.name
+                )
                 setDisplayHomeAsUpEnabled(true)
                 setDisplayShowHomeEnabled(true)
             }
@@ -72,7 +107,7 @@ class DetailStoryActivity : AppCompatActivity() {
                     ) { _, which ->
                         when (which) {
                             0 -> {
-                                if (allPermissionGranted()) {
+                                if (allPermissionGranted(REQUIRED_PERMISSION)) {
                                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                                     intent.resolveActivity(packageManager)
 
@@ -85,7 +120,7 @@ class DetailStoryActivity : AppCompatActivity() {
                                         viewModel.setImage(it.absolutePath)
                                         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
 
-                                        cameraCallback.launch(intent)
+                                        cameraIntentCallback.launch(intent)
                                     }
                                 } else {
                                     ActivityCompat.requestPermissions(
@@ -101,7 +136,7 @@ class DetailStoryActivity : AppCompatActivity() {
                                 intent.type = "image/*"
                                 val chooser =
                                     Intent.createChooser(intent, getString(R.string.choose_image))
-                                galleryCallback.launch(chooser)
+                                galleryIntentCallback.launch(chooser)
                             }
                         }
                     }
@@ -119,12 +154,17 @@ class DetailStoryActivity : AppCompatActivity() {
         if (data != null) {
             viewModel.setData(data)
             viewModel.type = 1
-            binding.apply{
+            binding.apply {
                 buttonContent.gone()
                 edtStory.isFocusableInTouchMode = false
                 edtStory.isFocusable = false
             }
-
+        } else {
+            isTracking = true
+            fusedLocation = LocationServices.getFusedLocationProviderClient(this)
+            createLocationRequest()
+            createLocationCallback()
+            startLocationUpdates()
         }
 
         viewModel.data.observe(this) {
@@ -134,11 +174,11 @@ class DetailStoryActivity : AppCompatActivity() {
                 }
                 Status.SUCCESS -> {
                     showLoading(false)
-                    if(viewModel.type == 1) {
+                    if (viewModel.type == 1) {
                         binding.apply {
                             it.data?.let { data -> showData(data) }
                         }
-                    }else{
+                    } else {
                         finish()
                         setResult(RESULT_OK)
                         showToast(getString(R.string.add_story_success))
@@ -156,6 +196,65 @@ class DetailStoryActivity : AppCompatActivity() {
         }
     }
 
+    private fun startLocationUpdates() {
+        try {
+            fusedLocation.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        } catch (e: Exception) {
+            showToast(e.message.toString())
+        }
+    }
+
+    private fun stopLocatonUpdates() {
+        fusedLocation.removeLocationUpdates(locationCallback)
+    }
+
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest.create().apply {
+            interval = TimeUnit.SECONDS.toMillis(1)
+            maxWaitTime = TimeUnit.SECONDS.toMillis(1)
+            priority = Priority.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client = LocationServices.getSettingsClient(this)
+
+        client.checkLocationSettings(builder.build())
+            .addOnSuccessListener {
+                getCurrentLocation()
+            }
+            .addOnFailureListener { e ->
+                if (e is ResolvableApiException) {
+                    try {
+                        locationIntentCallback.launch(
+                            IntentSenderRequest.Builder(e.resolution).build()
+                        )
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        showToast(sendEx.message.toString())
+                    }
+                }
+            }
+    }
+
+    private fun createLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                for (location in result.locations) {
+                    Log.e(
+                        "Location Result",
+                        "onLocationResult: ${location.latitude}/${location.longitude}",
+                    )
+                    viewModel.setLocation(location)
+                }
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -163,7 +262,7 @@ class DetailStoryActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_REQUEST_CODE) {
-            if (!allPermissionGranted()) {
+            if (!allPermissionGranted(REQUIRED_PERMISSION)) {
                 showToast(getString(R.string.permission_denied))
             } else {
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -178,9 +277,48 @@ class DetailStoryActivity : AppCompatActivity() {
                     viewModel.setImage(it.absolutePath)
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
 
-                    cameraCallback.launch(intent)
+                    cameraIntentCallback.launch(intent)
                 }
             }
+        } else if (requestCode == LOCATION_REQUEST_CODE) {
+            if (!allPermissionGranted(REQUIRED_LOCATION_PERMISSION)) {
+                showToast(getString(R.string.permission_denied))
+            } else {
+                getCurrentLocation()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isTracking) startLocationUpdates()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocatonUpdates()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopLocatonUpdates()
+    }
+
+    private fun getCurrentLocation() {
+        if (allPermissionGranted(REQUIRED_LOCATION_PERMISSION)) {
+            fusedLocation.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    Log.e("DetailStoryActivity", "getCurrentLocation: Location settings granted")
+                } else {
+                    Log.e("DetailStoryActivity", "getCurrentLocation: Location settings granted")
+                }
+            }
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_LOCATION_PERMISSION,
+                LOCATION_REQUEST_CODE
+            )
         }
     }
 
@@ -203,7 +341,7 @@ class DetailStoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun allPermissionGranted() = REQUIRED_PERMISSION.all {
+    private fun allPermissionGranted(permission: Array<String>) = permission.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -215,6 +353,11 @@ class DetailStoryActivity : AppCompatActivity() {
     companion object {
         const val DATA = "data"
         private const val CAMERA_REQUEST_CODE = 1
+        private const val LOCATION_REQUEST_CODE = 2
         private val REQUIRED_PERMISSION = arrayOf(Manifest.permission.CAMERA)
+        private val REQUIRED_LOCATION_PERMISSION = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
     }
 }

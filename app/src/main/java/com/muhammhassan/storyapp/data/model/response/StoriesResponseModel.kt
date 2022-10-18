@@ -10,5 +10,5 @@ data class StoriesResponseModel(
     val description: String,
     val photoUrl: String,
     val lat: Double? = null,
-    val long: Double? = null
+    val lon: Double? = null
 ): Parcelable

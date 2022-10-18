@@ -11,6 +11,14 @@ class LoginInteractor(private val userRepository: UserRepository) : LoginUseCase
     override fun login(user: LoginModel): Flow<ApiResponse<LoginResponseModel>> =
         userRepository.login(user)
 
+    override fun saveToken(token: String) {
+        userRepository.saveToken(token)
+    }
+
+    override fun getToken(): String? {
+        return userRepository.getToken()
+    }
+
     companion object {
         private var INSTANCE: LoginInteractor? = null
 

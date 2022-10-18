@@ -1,6 +1,7 @@
 package com.muhammhassan.storyapp.utils
 
 import android.content.Context
+import com.muhammhassan.storyapp.data.datasource.LocalDataSource
 import com.muhammhassan.storyapp.data.datasource.RemoteDataSource
 import com.muhammhassan.storyapp.data.interactor.*
 import com.muhammhassan.storyapp.data.repository.StoryRepository
@@ -43,17 +44,18 @@ object Module {
 
     val dataSourceModule = module {
         single { RemoteDataSource.getInstance(get()) }
+        single {LocalDataSource.getInstance(get())}
     }
 
     val repositoryModule = module {
-        single<UserRepository> { UserRepositoryImpl.getInstance(get()) }
+        single<UserRepository> { UserRepositoryImpl.getInstance(get(), get()) }
         single<StoryRepository> { StoryRepositoryImpl.getInstance(get()) }
     }
 
     val viewModelModule = module {
         viewModel { LoginViewModel(get(), get()) }
         viewModel { RegisterViewModel(get(), get()) }
-        viewModel { ListStoryViewModel(get(), get()) }
+        viewModel { ListStoryViewModel(get()) }
         viewModel { DetailStoryViewModel(get(), get()) }
         viewModel { MapViewModel(get()) }
     }
@@ -61,7 +63,7 @@ object Module {
     val useCaseModule = module {
         factory<LoginUseCase> { LoginInteractor.getInstance(get()) }
         factory<RegisterUseCase> { RegisterInteractor.getInstance(get()) }
-        factory<StoryListUseCase> { StoryListInteractor.getInstance(get()) }
+        factory<StoryListUseCase> { StoryListInteractor.getInstance(get(), get()) }
         factory<DetailStoryUseCase> { DetailStoryInteractor.getInstance(get()) }
         factory<MapUseCase> { MapInteractor.getInstance(get()) }
     }

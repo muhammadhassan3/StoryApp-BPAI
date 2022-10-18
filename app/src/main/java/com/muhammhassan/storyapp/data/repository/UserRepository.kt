@@ -9,4 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     fun login(user: LoginModel): Flow<ApiResponse<LoginResponseModel>>
     fun register(user: RegisterModel): Flow<ApiResponse<Any>>
+    fun saveToken(token: String)
+    fun getToken(): String?
+    fun logout()
 }

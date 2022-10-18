@@ -34,7 +34,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        observeViewModel()
         viewModel.getStoriesList()
     }
 
@@ -62,8 +61,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addMarkers(data: List<StoriesResponseModel>) {
         for (item in data) {
-            if (item.lat != null && item.long != null) {
-                val location = LatLng(item.lat, item.long)
+            if (item.lat != null && item.lon != null) {
+                val location = LatLng(item.lat, item.lon)
                 val title = item.name
 
                 val marker = MarkerOptions().also {
@@ -85,5 +84,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        observeViewModel()
     }
 }

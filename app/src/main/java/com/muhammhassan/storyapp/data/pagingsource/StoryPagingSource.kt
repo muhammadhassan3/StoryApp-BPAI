@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.muhammhassan.storyapp.data.datasource.RemoteDataSource
 import com.muhammhassan.storyapp.data.model.response.StoriesResponseModel
+import com.muhammhassan.storyapp.utils.Constant.PAGE_SIZE
 import com.muhammhassan.storyapp.utils.Constant.STARTING_PAGE
 import com.muhammhassan.storyapp.utils.NoDataException
 import com.muhammhassan.storyapp.utils.api.Status
@@ -13,22 +14,22 @@ class StoryPagingSource(private val dataSource: RemoteDataSource) :
     PagingSource<Int, StoriesResponseModel>() {
     override fun getRefreshKey(state: PagingState<Int, StoriesResponseModel>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)
-                ?.prevKey?.plus(1) ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, StoriesResponseModel> {
         val pageIndex = params.key ?: STARTING_PAGE
         return try {
-            val response = dataSource.getAllStories(pageIndex, 10)
+            val response = dataSource.getAllStories(pageIndex, PAGE_SIZE)
             when (response.status) {
                 Status.SUCCESS -> {
                     if (response.data != null) {
                         val nextKey = if (response.data.isEmpty()) {
                             null
                         } else {
-                            pageIndex + (response.data.size / 10)
+                            pageIndex + (response.data.size / PAGE_SIZE)
                         }
                         LoadResult.Page(
                             data = response.data,

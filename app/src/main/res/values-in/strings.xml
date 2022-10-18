@@ -10,10 +10,6 @@
     <string name="signup_message">Belum punya akun? Daftar disini</string>
     <string name="name">Nama</string>
     <string name="register">Daftar</string>
-    <string name="login_message">Sudah punya akun? Login disini</string>
-    <string name="warning">Peringatan</string>
-    <string name="data_is_filled">Kamu sudah mengisi beberapa form di atas, apakah kamu ingin menghapusnya dan melanjutkan?</string>
-    <string name="yes">Ya</string>
     <string name="invalid_email_password">Kombinasi email dan password yang kamu masukkan tidak ditemukan, silahkan periksa kembali data yang anda masukan.</string>
     <string name="data_not_found">Data tidak ditemukan</string>
     <string name="invalid_name">Harap masukkan nama dengan benar</string>

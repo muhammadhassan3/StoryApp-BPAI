@@ -15,10 +15,12 @@ import java.io.File
 class StoryRepositoryImpl(private val remoteDataSource: RemoteDataSource): StoryRepository {
     override fun saveStory(
         image: File,
-        desc: String
+        desc: String,
+        lat: Double?,
+        lon: Double?
     ): Flow<ApiResponse<Any>> = flow {
         emit(ApiResponse.loading())
-        val response = remoteDataSource.saveStory(image, desc)
+        val response = remoteDataSource.saveStory(image, desc, lat, lon)
         emit(response)
     }
 
@@ -26,12 +28,6 @@ class StoryRepositoryImpl(private val remoteDataSource: RemoteDataSource): Story
         return Pager(config = PagingConfig(PAGE_SIZE)){
             StoryPagingSource(remoteDataSource)
         }.flow
-    }
-
-    override fun getStories(): Flow<ApiResponse<List<StoriesResponseModel>>> = flow{
-        emit(ApiResponse.loading())
-        val response = remoteDataSource.getAllStories(1,5)
-        emit(response)
     }
 
     override fun getStoriesWithLocation(): Flow<ApiResponse<List<StoriesResponseModel>>> = flow{

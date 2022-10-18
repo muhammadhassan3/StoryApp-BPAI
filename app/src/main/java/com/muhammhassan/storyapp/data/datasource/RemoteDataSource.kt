@@ -10,6 +10,7 @@ import com.muhammhassan.storyapp.utils.api.ApiResponse
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -64,8 +65,16 @@ class RemoteDataSource(private val api: ApiInterface) {
         }
     }
 
-    suspend fun saveStory(image: File, desc: String): ApiResponse<Any> {
+    suspend fun saveStory(image: File, desc: String, latitude: Double?, longitude: Double?): ApiResponse<Any> {
         val description = desc.toRequestBody("text/plain".toMediaType())
+        var lat: RequestBody? = null
+        var lon: RequestBody? = null
+
+        if(latitude != null && longitude != null){
+            lat = latitude.toString().toRequestBody("text/plain".toMediaType())
+            lon = longitude.toString().toRequestBody("text/plain".toMediaType())
+        }
+
         val imagepart = image.asRequestBody("image/jpeg".toMediaTypeOrNull())
         val imageMultipart = MultipartBody.Part.createFormData(
             "photo",
@@ -74,7 +83,7 @@ class RemoteDataSource(private val api: ApiInterface) {
         )
 
         return try {
-            val response = api.addStory(imageMultipart, description)
+            val response = api.addStory(imageMultipart, description, lat, lon)
             if (response.isSuccessful && response.body() != null) {
                 if (response.body()!!.error) {
                     ApiResponse.error(response.body()?.message.toString())

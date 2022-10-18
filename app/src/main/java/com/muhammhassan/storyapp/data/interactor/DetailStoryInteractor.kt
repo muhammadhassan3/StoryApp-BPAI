@@ -7,8 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 class DetailStoryInteractor(private val repository: StoryRepository) : DetailStoryUseCase {
-    override fun save(image: File, desc: String): Flow<ApiResponse<Any>> =
-        repository.saveStory(image, desc)
+    override fun save(
+        image: File,
+        desc: String,
+        lat: Double?,
+        lon: Double?
+    ): Flow<ApiResponse<Any>> =
+        repository.saveStory(image, desc, lat, lon)
 
     companion object{
         private var INSTANCE: DetailStoryInteractor? = null

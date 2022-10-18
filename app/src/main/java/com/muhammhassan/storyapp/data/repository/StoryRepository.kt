@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 interface StoryRepository {
-    fun saveStory(image: File, desc: String): Flow<ApiResponse<Any>>
+    fun saveStory(image: File, desc: String, lat: Double?, lon: Double?): Flow<ApiResponse<Any>>
     fun getPagingStories(): Flow<PagingData<StoriesResponseModel>>
-    fun getStories(): Flow<ApiResponse<List<StoriesResponseModel>>>
     fun getStoriesWithLocation(): Flow<ApiResponse<List<StoriesResponseModel>>>
 }

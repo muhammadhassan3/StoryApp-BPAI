@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginUseCase {
     fun login(user: LoginModel): Flow<ApiResponse<LoginResponseModel>>
+    fun saveToken(token: String)
+    fun getToken(): String?
 }
