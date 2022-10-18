@@ -1,0 +1,85 @@
+Repository Test
+StoryRepositoryTest
+- Save story and return success state
+1. Memastikan data tidak null
+2. Memastikan status dari response adalah SUCCESS
+
+- Get Story List with paging
+1. Memastikan fungsi getAllStories yang ada di dalam RemoteDataSource terpanggil satu kali
+2. Memastikan data yang ada di dalam paging sesuai dengan yang diharapkan
+
+- Get Stories with locaationa nd return success state
+1. memastikan data yang ada di dalam response tidak null
+2. Memastikan status dari response adalah SUCCESS
+3. memastikan jumlah data yang didapatkan sesuai dengan yang diharapkan
+
+
+UserRepositoryTest
+- User login and return success state
+1. memastikan data yang ada di dalam response tidak null
+2. memastikan status dari response adalah SUCCESS
+3. memastikan userId yang ada di dalam response sesuai dengan yang diharapkan
+4. memastikan name yang ada di dalam response sesuai dengan yang diharapkan
+5. memastikan token yang ada di dalam response sesuai dengan yang diharapkan
+
+- User register and return success state
+1. memastikan data yang ada di dalam response tidak null
+2. memastikan status dari response adalah SUCCESS
+
+-save token
+1. memastikan fungsi saveToken yang ada di dalam localDataSource terpanggil satu kali
+
+-remove token
+1. memastikan fungsi removeToken yang ada di dalam LocalDataSource terpanggil satu kali
+
+- get token
+1. memastikan fungsi get token yang ada di dalam LocalDataSource terpanggil satu kali
+2. memastikan nilai token tidak null
+3. memastikan nilai token sesuai dengan yang diharapkan
+
+
+ViewModel Test
+ListStoryViewModelTest
+-get Story List
+1. memastikan fungsi getPagingData yang ada di dalam StoryListUseCase dijalankan satu kali
+2. memastikan data yang dihasilkan tidak null
+-logout
+1. memastikan fungsi logout yang ada di dalam UseCase terpanggil 1 kali
+
+LoginViewModelTest
+-login
+1. memastikan fungsi login yang ada di dalam useCase terpanggil satu kali
+2. memastikan data yang didapatkan tidak null
+3. memastikan status dari response adalah SUCCESS
+4. memastikan token dari response sesuai dengan yang diharapkan
+5. memastikan name dari response sesuai dengan yang diharapkan
+6. memastikan userId dari response sesuai dengan yang diharapkan
+
+-set token
+1. memastikan fungsi saveToken yang ada di dalam UseCase terpanggil satu kali
+
+
+MapViewModelTest
+-get data
+1. memastikan fungsi getStoryWithLocation() terpanggil sebanyak satu kali
+2. memastikan data response tidak null
+3. memastikan status dari response adalah SUCCESS
+4. memastikan jumlah data yang ada di dalam response sesuai dengan yang diharapkan
+
+-setStatus
+1. memastikan data yang ditetapkan sesuai dengan yang diharapkan
+
+
+RegisterViewModelTest
+-Register
+1. memastikan fungsi register yang ada di dalam UseCase terpanggil satu kali
+2. memastikan data response tidak null
+3. memastikan status dari response adalah SUCCESS
+
+
+DetailStoryViewModelTest
+-save
+1. memastikan fungsi save yang ada di dalam UseCase terpanggil satu kali
+2. memastikan response yang dihasilkan tidak null
+3. memastikan status dari response adalah SUCCESS
+
