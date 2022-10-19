@@ -35,10 +35,9 @@ import java.util.concurrent.TimeUnit
 class DetailStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailStoryBinding
     private val viewModel by viewModel<DetailStoryViewModel>()
-    private lateinit var fusedLocation: FusedLocationProviderClient
+    private var fusedLocation: FusedLocationProviderClient? = null
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var isTracking = false
 
     private val cameraIntentCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -160,7 +159,6 @@ class DetailStoryActivity : AppCompatActivity() {
                 edtStory.isFocusable = false
             }
         } else {
-            isTracking = true
             fusedLocation = LocationServices.getFusedLocationProviderClient(this)
             createLocationRequest()
             createLocationCallback()
@@ -198,7 +196,7 @@ class DetailStoryActivity : AppCompatActivity() {
 
     private fun startLocationUpdates() {
         try {
-            fusedLocation.requestLocationUpdates(
+            fusedLocation?.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
@@ -209,7 +207,7 @@ class DetailStoryActivity : AppCompatActivity() {
     }
 
     private fun stopLocatonUpdates() {
-        fusedLocation.removeLocationUpdates(locationCallback)
+        fusedLocation?.removeLocationUpdates(locationCallback)
     }
 
     private fun createLocationRequest() {
@@ -291,7 +289,7 @@ class DetailStoryActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isTracking) startLocationUpdates()
+        startLocationUpdates()
     }
 
     override fun onPause() {
@@ -306,7 +304,7 @@ class DetailStoryActivity : AppCompatActivity() {
 
     private fun getCurrentLocation() {
         if (allPermissionGranted(REQUIRED_LOCATION_PERMISSION)) {
-            fusedLocation.lastLocation.addOnSuccessListener { location ->
+            fusedLocation?.lastLocation?.addOnSuccessListener { location ->
                 if (location != null) {
                     Log.e("DetailStoryActivity", "getCurrentLocation: Location settings granted")
                 } else {
