@@ -6,6 +6,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +41,15 @@ class ListStoryActivity : AppCompatActivity() {
         startActivity(intent, options)
     }
 
+    private val addCallbackResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if(it.resultCode == RESULT_OK){
+            binding.swipeList.post{
+                binding.swipeList.isRefreshing = true
+                listAdapter.refresh()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListStoryBinding.inflate(layoutInflater)
@@ -54,13 +64,12 @@ class ListStoryActivity : AppCompatActivity() {
 
         binding.btnAdd.setOnClickListener {
             val intent = Intent(this, DetailStoryActivity::class.java)
-            startActivity(intent)
+            addCallbackResult.launch(intent)
         }
 
         binding.swipeList.apply {
             setOnRefreshListener {
                 listAdapter.refresh()
-                this.isRefreshing = false
             }
         }
         binding.btnRetry.setOnClickListener{
@@ -80,6 +89,8 @@ class ListStoryActivity : AppCompatActivity() {
             if (state != it.source.refresh) {
                 if (listAdapter.itemCount > 0 && it.source.refresh is LoadState.NotLoading) {
                     showStatus(Status.SUCCESS)
+                    binding.rvList.scrollToPosition(0)
+                    binding.swipeList.isRefreshing = false
                 } else if (it.source.refresh is LoadState.Loading) {
                     showStatus(Status.LOADING)
                 } else if (it.source.refresh is LoadState.Error) {

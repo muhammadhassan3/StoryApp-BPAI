@@ -177,8 +177,8 @@ class DetailStoryActivity : AppCompatActivity() {
                             it.data?.let { data -> showData(data) }
                         }
                     } else {
-                        finish()
                         setResult(RESULT_OK)
+                        finish()
                         showToast(getString(R.string.add_story_success))
                     }
                 }
